@@ -1,7 +1,9 @@
-<html lang="en"><head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <title>.fidget Reader • File Format &amp; Examples</title>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>.fidget • File Format & Examples</title>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
@@ -38,17 +40,26 @@
 </head>
 <body>
 
-  <h1>📄 .fidget File Format &amp; Examples</h1>
+  <h1>📄 .fidget File Format & Examples</h1>
   <p>This page covers the core fields of the <code>.fidget</code> format and shows two ready-to-load examples: a toggle and a spinner.</p>
+
+<div class="section">
+    <h2>🔨 Schema Versions</h2>
+    <ul>
+      <li><strong><code>0.9</code></strong>: The current version. Documented below.</li>
+    </ul>
+  </div>
 
   <div class="section">
     <h2>🔑 Common Fields</h2>
     <ul>
-      <li><strong><code>type</code></strong>: <em>"toggle"</em> | <em>"spinner"</em></li>
-      <li><strong><code>name</code></strong>: Display name for your fidget</li>
-      <li><strong><code>imageA</code></strong>: Base64-encoded PNG for default state</li>
-      <li><strong><code>sound</code></strong> (optional): Base64-encoded audio for click/interaction</li>
-      
+      <li><strong><code>type</code></strong> : <em>"toggle"</em> | <em>"spinner"</em></li>
+      <li><strong><code>name</code></strong> : Display name for your fidget</li>
+      <li><strong><code>imageA</code></strong> : Base64-encoded image for default state</li>
+      <li><strong><code>sound</code></strong> (optional) : Base64-encoded audio for click/interaction</li>
+      <li><strong><code>version</code></strong> (optional but strongly recommended) : Schema Version (e.g. <code>"0.9"</code>)</li>
+      <li><strong><code>author</code></strong> (optional) : Creator of the fidget (e.g. <code>"Con and Sneaky"</code>)</li>
+
     </ul>
   </div>
 
@@ -56,7 +67,7 @@
     <h2>🎚️ Toggle-Type Fields</h2>
     <p>When <code>type</code> is <code>"toggle"</code>, you must also supply:</p>
     <ul>
-      <li><strong><code>imageB</code></strong>: Base64 PNG for the alternate state</li>
+      <li><strong><code>imageB</code></strong>: Base64 image for the alternate state</li>
     </ul>
   </div>
 
@@ -64,7 +75,7 @@
     <h2>🌀 Spinner-Type Fields</h2>
     <p>When <code>type</code> is <code>"spinner"</code>, you may add:</p>
     <ul>
-      <li><strong><code>speed</code></strong> (Not yet functional) : Full rotations per second (number)</li>
+      <li><strong><code>speed</code></strong>: Full rotations per second (number)</li>
     </ul>
   </div>
 
@@ -78,7 +89,7 @@
   "imageA": "data:image/png;base64,iVBORw0KGgoAAAANS…",
   "imageB": "data:image/png;base64,SU5BTkkgRk9SIElNQUdFUjEi…",
   "sound": "data:audio/mp3;base64,//uQxAB…",
-  "source": "Examples"
+  "source": "Fidgety Maker v1.4"
 }
     </code></pre>
 
@@ -88,7 +99,7 @@
   "name": "Retro SpinX",
   "imageA": "data:image/png;base64,AAABAAEAICAAAAE…",
   "speed": 3.0,
-  "source": "Examples"
+  "source": "Fidgety Maker v1.4"
 }
     </code></pre>
   </div>
@@ -97,5 +108,5 @@
     Made with ❤️ by Con &amp; Sneaky • v0.9.0 • June 2025
   </footer>
 
-
-</body></html>
+</body>
+</html>
