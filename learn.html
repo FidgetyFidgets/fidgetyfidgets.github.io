@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Learn About Fidget Creator</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f9f9fb;
+      color: #333;
+      padding: 2rem;
+      max-width: 800px;
+      margin: auto;
+      line-height: 1.6;
+    }
+    h1, h2 {
+      color: #ff5588;
+    }
+    code {
+      background: #f0f0f0;
+      padding: 0.2em 0.4em;
+      border-radius: 4px;
+      font-size: 0.95em;
+    }
+    .tip {
+      background: #fff3f6;
+      border-left: 4px solid #ff5588;
+      padding: 0.5rem 1rem;
+      margin: 1.5rem 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎨 Meet Fidget Creator</h1>
+  <p>
+    Fidget Creator is your friendly tool for crafting <code>.fidget</code> files—
+    interactive visual-sound widgets designed to spin, toggle, and delight.
+  </p>
+
+  <h2>🛠 Features</h2>
+  <ul>
+    <li>Toggle and Spinner types</li>
+    <li>ImageA + optional ImageB & Sound</li>
+    <li>Live JSON preview while you edit</li>
+    <li>Automatic image resizing to 256×256 (or turn it off!)</li>
+    <li>Preview spinner with angular velocity in rad/s</li>
+    <li>Downloadable <code>.fidget</code> files with embedded data</li>
+  </ul>
+
+  <h2>✨ Advanced Mode</h2>
+  <p>
+    Need more control? Flip the Advanced Mode switch to unlock additional options:
+  </p>
+  <ul>
+    <li>Disable auto-resizing</li>
+    <li>Keep your original file format</li>
+    <li>Edit the <code>schemaVersion</code></li>
+  </ul>
+
+  <div class="tip">
+    💡 Tip: Images are auto-scaled and converted to PNG by default—
+    unless Advanced Mode says otherwise!
+  </div>
+
+  <h2>📁 The .fidget Format</h2>
+  <p>
+    Every <code>.fidget</code> is a JSON file containing your metadata and assets encoded as Data URLs.
+    For example:
+  </p>
+  <pre>{
+  "type": "spinner",
+  "name": "My Cool Spinny",
+  "imageA": "data:image/png;base64,...",
+  "velocity": 40
+}</pre>
+
+  <p>
+    You can create <code>.fidget</code> files without ever touching code—just upload, preview, and export.
+  </p>
+
+  <h2>📦 Try It Now</h2>
+  <p>
+    Launch Fidget Creator on the <a href="https://fidgetyfidgets.github.io">Fidgety Web Portal</a>.
+  </p>
+</body>
+</html>
