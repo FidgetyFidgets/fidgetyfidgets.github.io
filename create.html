@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Fidgety Maker</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #fdfbfb, #eef2f3);
+      color: #222;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    header {
+      background: linear-gradient(90deg, #ff5588, #e04178);
+      padding: 1rem 2rem;
+      color: white;
+      text-align: center;
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+    main {
+      padding: 2rem;
+      max-width: 720px;
+      margin: auto;
+      flex: 1;
+    }
+    h2 {
+      color: #e04178;
+      margin-top: 1rem;
+    }
+    label {
+      display: block;
+      margin: 1rem 0 0.3rem;
+      font-weight: 600;
+    }
+    input, select, textarea, button {
+      width: 100%;
+      font: inherit;
+      padding: 0.5rem;
+      box-sizing: border-box;
+      margin-bottom: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    input:disabled, textarea:disabled, select:disabled {
+  background-color: #f0f0f0;
+  color: #aaa;
+  cursor: not-allowed;
+    }
+    textarea {
+      resize: vertical;
+      font-family: monospace;
+    }
+    button {
+      background: #ff5588;
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    button:hover {
+      background: #e04178;
+    }
+    .preview {
+      white-space: pre-wrap;
+      background: #f7f7f7;
+      padding: 1rem;
+      border-radius: 6px;
+      border: 1px solid #ddd;
+      font-family: monospace;
+      font-size: 0.9rem;
+    }
+    .hidden {
+      display: none;
+    }
+    footer {
+      text-align: center;
+      font-size: 0.85rem;
+      color: #888;
+      padding: 1rem;
+      background: #fafafa;
+    }
+  </style>
+</head>
+<body>
+
+  <header>Fidget Creator</header>
+
+  <main>
+    <p>This tool helps you create a <code>.fidget</code> file for the Fidgety Web Portal.</p>
+
+    <label>Name</label>
+    <input id="name" placeholder="e.g. Bubble Pop" />
+
+    <label>Creator</label>
+    <input id="creator" placeholder="Your name" />
+
+    <label>Type</label>
+    <select id="type" onchange="handleTypeChange()">
+      <option value="">— Select —</option>
+      <option value="toggle">Toggle</option>
+      <option value="spinner">Spinner</option>
+    </select>
+
+    <label>imageA upload</label>
+    <input type="file" id="uploadA" accept="image/*" />
+    <textarea id="imageA" placeholder="Data URL of imageA..."></textarea>
+
+    <div id="toggleSection" class="hidden">
+      <label>imageB upload</label>
+      <input type="file" id="uploadB" accept="image/*" />
+      <textarea id="imageB" placeholder="Data URL of imageB (optional)"></textarea>
+
+      <label>Sound upload (MP3/OGG)</label>
+      <input type="file" id="uploadSound" accept="audio/*" />
+      <textarea id="sound" placeholder="Data URL of sound (optional)"></textarea>
+    </div>
+
+    <div id="spinnerSection" class="hidden">
+      <label>Speed (rotations per second)</label>
+      <input type="number" id="speed" step="0.1" disabled placeholder="Not yet supported">
+    </div>
+
+    <button onclick="generate()">📦 Download .fidget</button>
+
+    <h2>Preview</h2>
+    <div class="preview" id="previewOutput">{}</div>
+  </main>
+
+  <footer>
+    © 2025 Fidgety Web Portal — <a href="https://fidgetyfidgets.github.io" target="_blank">fidgetyfidgets.github.io</a>
+  </footer>
+
+<!-- Inside <script> -->
+<script>
+  // Refs
+  const refs = {
+    name: document.getElementById('name'),
+    creator: document.getElementById('creator'),
+    type: document.getElementById('type'),
+    imageA: document.getElementById('imageA'),
+    imageB: document.getElementById('imageB'),
+    sound: document.getElementById('sound'),
+    speed: document.getElementById('speed'),
+    preview: document.getElementById('previewOutput')
+  };
+
+  function handleTypeChange() {
+    const t = refs.type.value;
+    document.getElementById('toggleSection').classList.toggle('hidden', t !== 'toggle');
+    document.getElementById('spinnerSection').classList.toggle('hidden', t !== 'spinner');
+  }
+
+  function generate() {
+    const t = refs.type.value;
+    if (!t) return alert("Please select a fidget type.");
+    const obj = {
+      type: t,
+      name: refs.name.value.trim() || "Untitled Fidget",
+      imageA: refs.imageA.value.trim(),
+      schemaVersion: "0.9"
+    };
+    if (refs.creator.value.trim()) obj.author = refs.creator.value.trim();
+    if (t === "toggle") {
+      if (refs.imageB.value.trim()) obj.imageB = refs.imageB.value.trim();
+      if (refs.sound.value.trim()) obj.sound = refs.sound.value.trim();
+    }
+    if (t === "spinner") {
+      const sp = parseFloat(refs.speed.value);
+      if (!isNaN(sp)) obj.speed = sp;
+    }
+    const json = JSON.stringify(obj, null, 2);
+    refs.preview.textContent = json;
+
+    const blob = new Blob([json], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = (obj.name || "fidget") + ".fidget";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  function resizeAndEncode(file, cb) {
+    const img = new Image();
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (/svg|gif/i.test(file.name)) return cb(reader.result); // skip resizing
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        canvas.width = canvas.height = 256;
+        const ctx = canvas.getContext("2d");
+        ctx.clearRect(0, 0, 256, 256);
+        ctx.drawImage(img, 0, 0, 256, 256);
+        cb(canvas.toDataURL("image/png"));
+      };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  document.getElementById('uploadA').onchange = e => {
+    const file = e.target.files[0];
+    if (file) resizeAndEncode(file, data => refs.imageA.value = data);
+  };
+  document.getElementById('uploadB').onchange = e => {
+    const file = e.target.files[0];
+    if (file) resizeAndEncode(file, data => refs.imageB.value = data);
+  };
+  document.getElementById('uploadSound').onchange = e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => refs.sound.value = reader.result;
+    reader.readAsDataURL(file);
+  };
+</script>
+</body>
+</html>
