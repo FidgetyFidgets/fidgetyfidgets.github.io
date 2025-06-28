@@ -3,101 +3,158 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Fidgety Maker</title>
+  <title>Fidget Creator</title>
   <style>
+    :root {
+      --primary: #ff5588;
+      --primary-dark: #e04178;
+      --bg: #eef2f3;
+      --text: #222;
+      --error: #cc4444;
+      --radius: 12px;
+      --transition: 0.2s ease;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0 }
     body {
-      margin: 0;
+      background: linear-gradient(135deg, #fdfbfb, var(--bg));
+      color: var(--text);
       font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, #fdfbfb, #eef2f3);
-      color: #222;
-      display: flex;
-      flex-direction: column;
       min-height: 100vh;
+      display: flex; flex-direction: column;
     }
     header {
-      background: linear-gradient(90deg, #ff5588, #e04178);
-      padding: 1rem 2rem;
-      color: white;
-      text-align: center;
-      font-size: 1.5rem;
-      font-weight: bold;
+      background: var(--primary);
+      padding: 1rem;
+      color: white; text-align: center;
+      font-size: 1.5rem; font-weight: bold;
     }
     main {
-      padding: 2rem;
-      max-width: 720px;
-      margin: auto;
       flex: 1;
+      max-width: 720px;
+      margin: 2rem auto;
+      padding: 0 1rem;
     }
-    h2 {
-      color: #e04178;
-      margin-top: 1rem;
+    .field-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
     }
     label {
-      display: block;
-      margin: 1rem 0 0.3rem;
       font-weight: 600;
+      margin-bottom: 0.3rem;
+      display: block;
     }
     input, select, textarea, button {
       width: 100%;
       font: inherit;
-      padding: 0.5rem;
-      box-sizing: border-box;
-      margin-bottom: 1rem;
+      padding: 0.6rem;
       border: 1px solid #ccc;
-      border-radius: 6px;
+      border-radius: var(--radius);
+      transition: border var(--transition), background var(--transition);
+      margin-bottom: 1rem;
     }
-    input:disabled, textarea:disabled, select:disabled {
-  background-color: #f0f0f0;
-  color: #aaa;
-  cursor: not-allowed;
-    }
-    textarea {
-      resize: vertical;
-      font-family: monospace;
-    }
+    textarea { resize: vertical; }
     button {
-      background: #ff5588;
+      background: var(--primary);
       color: white;
       border: none;
       cursor: pointer;
-      transition: background 0.2s;
+      border-radius: var(--radius);
     }
     button:hover {
-      background: #e04178;
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
-    .preview {
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 26px;
+    }
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0;
+      right: 0; bottom: 0;
+      background-color: #ccc;
+      transition: background-color var(--transition);
+      border-radius: var(--radius);
+    }
+    .slider::before {
+      position: absolute;
+      content: "";
+      height: 20px;
+      width: 20px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: transform var(--transition);
+      border-radius: 50%;
+    }
+    .switch input:checked + .slider {
+      background-color: var(--primary);
+    }
+    .switch input:checked + .slider::before {
+      transform: translateX(24px);
+    }
+    .hidden { display: none }
+    .preview, .errors {
       white-space: pre-wrap;
-      background: #f7f7f7;
+      background: #fff;
       padding: 1rem;
-      border-radius: 6px;
+      border-radius: var(--radius);
       border: 1px solid #ddd;
       font-family: monospace;
       font-size: 0.9rem;
+      margin-top: 1rem;
     }
-    .hidden {
-      display: none;
-    }
-    footer {
+    .errors { color: var(--error) }
+    #spinnerPreviewContainer {
       text-align: center;
-      font-size: 0.85rem;
-      color: #888;
-      padding: 1rem;
-      background: #fafafa;
+      margin-top: 1rem;
+      transition: opacity var(--transition);
+    }
+    #spinnerPreview { width:128px; height:128px; }
+    @keyframes spin {
+      from { transform: rotate(0deg) }
+      to { transform: rotate(360deg) }
     }
   </style>
 </head>
 <body>
-
-  <header>Fidget Creator</header>
-
+  <header>✨ Fidget Creator</header>
   <main>
-    <p>This tool helps you create a <code>.fidget</code> file for the Fidgety Web Portal.</p>
+    <p>Create your own <code>.fidget</code> file—live preview and fun errors included!</p>
+
+    <!-- Advanced Mode Row -->
+    <div class="field-row">
+      <strong>Advanced Mode</strong>
+      <label class="switch">
+        <input type="checkbox" id="advancedToggle">
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <!-- Advanced Settings Panel -->
+    <div id="advancedSettings" class="hidden" style="padding:0.5rem 1rem; border:1px dashed #ccc; border-radius:var(--radius); margin-bottom:1rem;">
+      <label><input type="checkbox" id="autoResize" checked> Auto-resize images to 256×256</label>
+      <label><input type="checkbox" id="convertPNG" checked> Convert images to PNG</label>
+      <label>Schema Version</label>
+      <input type="text" id="schemaVersion" placeholder="e.g. 1.0" value="1.0">
+    </div>
 
     <label>Name</label>
-    <input id="name" placeholder="e.g. Bubble Pop" />
+    <input id="name" placeholder="e.g. Bubble Pop">
 
     <label>Creator</label>
-    <input id="creator" placeholder="Your name" />
+    <input id="creator" placeholder="Your name">
 
     <label>Type</label>
     <select id="type" onchange="handleTypeChange()">
@@ -107,119 +164,193 @@
     </select>
 
     <label>imageA upload</label>
-    <input type="file" id="uploadA" accept="image/*" />
-    <textarea id="imageA" placeholder="Data URL of imageA..."></textarea>
+    <input type="file" id="uploadA" accept="image/png,image/jpeg,image/webp,image/svg+xml,image/gif">
+    <textarea id="imageA" placeholder="Data URL for imageA..."></textarea>
 
     <div id="toggleSection" class="hidden">
       <label>imageB upload</label>
-      <input type="file" id="uploadB" accept="image/*" />
-      <textarea id="imageB" placeholder="Data URL of imageB (optional)"></textarea>
+      <input type="file" id="uploadB" accept="image/png,image/jpeg,image/webp,image/svg+xml,image/gif">
+      <textarea id="imageB" placeholder="Data URL for imageB (optional)"></textarea>
 
-      <label>Sound upload (MP3/OGG)</label>
-      <input type="file" id="uploadSound" accept="audio/*" />
-      <textarea id="sound" placeholder="Data URL of sound (optional)"></textarea>
+      <label>Sound upload</label>
+      <input type="file" id="uploadSound" accept="audio/mp3,audio/ogg">
+      <textarea id="sound" placeholder="Data URL for sound (optional)"></textarea>
     </div>
 
     <div id="spinnerSection" class="hidden">
-      <label>Speed (rotations per second)</label>
-      <input type="number" id="speed" step="0.1" disabled placeholder="Not yet supported">
+      <label>Angular Velocity (rad/s)</label>
+      <input type="number" id="velocity" placeholder="Default: 40" step="0.1">
     </div>
 
-    <button onclick="generate()">📦 Download .fidget</button>
+    <button onclick="downloadFidget()">📦 Download .fidget</button>
 
-    <h2>Preview</h2>
+    <div class="errors hidden" id="errorOutput"></div>
     <div class="preview" id="previewOutput">{}</div>
+
+    <div id="spinnerPreviewContainer" class="hidden">
+      <img id="spinnerPreview">
+    </div>
   </main>
 
-  <footer>
+  <footer style="text-align:center; padding:1rem; color:#888;">
     © 2025 Fidgety Web Portal — <a href="https://fidgetyfidgets.github.io" target="_blank">fidgetyfidgets.github.io</a>
   </footer>
 
-<!-- Inside <script> -->
-<script>
-  // Refs
-  const refs = {
-    name: document.getElementById('name'),
-    creator: document.getElementById('creator'),
-    type: document.getElementById('type'),
-    imageA: document.getElementById('imageA'),
-    imageB: document.getElementById('imageB'),
-    sound: document.getElementById('sound'),
-    speed: document.getElementById('speed'),
-    preview: document.getElementById('previewOutput')
-  };
-
-  function handleTypeChange() {
-    const t = refs.type.value;
-    document.getElementById('toggleSection').classList.toggle('hidden', t !== 'toggle');
-    document.getElementById('spinnerSection').classList.toggle('hidden', t !== 'spinner');
-  }
-
-  function generate() {
-    const t = refs.type.value;
-    if (!t) return alert("Please select a fidget type.");
-    const obj = {
-      type: t,
-      name: refs.name.value.trim() || "Untitled Fidget",
-      imageA: refs.imageA.value.trim(),
-      schemaVersion: "0.9"
+  <script>
+    const refs = {
+      advToggle: document.getElementById('advancedToggle'),
+      advSettings: document.getElementById('advancedSettings'),
+      autoResize: document.getElementById('autoResize'),
+      convertPNG: document.getElementById('convertPNG'),
+      schemaInput: document.getElementById('schemaVersion'),
+      name: document.getElementById('name'),
+      creator: document.getElementById('creator'),
+      type: document.getElementById('type'),
+      imageA: document.getElementById('imageA'),
+      imageB: document.getElementById('imageB'),
+      sound: document.getElementById('sound'),
+      velocity: document.getElementById('velocity'),
+      preview: document.getElementById('previewOutput'),
+      errors: document.getElementById('errorOutput'),
+      spinnerContainer: document.getElementById('spinnerPreviewContainer'),
+      spinnerImg: document.getElementById('spinnerPreview')
     };
-    if (refs.creator.value.trim()) obj.author = refs.creator.value.trim();
-    if (t === "toggle") {
-      if (refs.imageB.value.trim()) obj.imageB = refs.imageB.value.trim();
-      if (refs.sound.value.trim()) obj.sound = refs.sound.value.trim();
-    }
-    if (t === "spinner") {
-      const sp = parseFloat(refs.speed.value);
-      if (!isNaN(sp)) obj.speed = sp;
-    }
-    const json = JSON.stringify(obj, null, 2);
-    refs.preview.textContent = json;
 
-    const blob = new Blob([json], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = (obj.name || "fidget") + ".fidget";
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
-  }
+    // Show/hide advanced settings
+    refs.advToggle.addEventListener('change', () => {
+      refs.advSettings.classList.toggle('hidden', !refs.advToggle.checked);
+      updatePreview();
+    });
 
-  function resizeAndEncode(file, cb) {
-    const img = new Image();
-    const reader = new FileReader();
-    reader.onload = () => {
-      if (/svg|gif/i.test(file.name)) return cb(reader.result); // skip resizing
-      img.onload = () => {
-        const canvas = document.createElement("canvas");
-        canvas.width = canvas.height = 256;
-        const ctx = canvas.getContext("2d");
-        ctx.clearRect(0, 0, 256, 256);
-        ctx.drawImage(img, 0, 0, 256, 256);
-        cb(canvas.toDataURL("image/png"));
+    function displayError(msg) {
+      refs.errors.textContent = msg;
+      refs.errors.classList.remove('hidden');
+    }
+    function clearError() {
+      refs.errors.textContent = '';
+      refs.errors.classList.add('hidden');
+    }
+
+    function handleTypeChange() {
+      const t = refs.type.value;
+      document.getElementById('toggleSection').classList.toggle('hidden', t !== 'toggle');
+      document.getElementById('spinnerSection').classList.toggle('hidden', t !== 'spinner');
+      updatePreview();
+    }
+
+    function resizeAndEncode(file, cb) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const doResize = refs.advToggle.checked && refs.autoResize.checked;
+        const doConvert = refs.advToggle.checked && refs.convertPNG.checked;
+        if (!doResize && !doConvert) return cb(reader.result);
+
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const w = doResize ? 256 : img.width;
+          const h = doResize ? 256 : img.height;
+          canvas.width = w; canvas.height = h;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, w, h);
+          const outputType = doConvert ? 'image/png' : file.type;
+          cb(canvas.toDataURL(outputType));
+        };
+        img.src = reader.result;
       };
-      img.src = reader.result;
-    };
-    reader.readAsDataURL(file);
-  }
+      reader.readAsDataURL(file);
+    }
 
-  document.getElementById('uploadA').onchange = e => {
-    const file = e.target.files[0];
-    if (file) resizeAndEncode(file, data => refs.imageA.value = data);
-  };
-  document.getElementById('uploadB').onchange = e => {
-    const file = e.target.files[0];
-    if (file) resizeAndEncode(file, data => refs.imageB.value = data);
-  };
-  document.getElementById('uploadSound').onchange = e => {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => refs.sound.value = reader.result;
-    reader.readAsDataURL(file);
-  };
-</script>
+    // File input handlers
+    ['uploadA','uploadB'].forEach(id => {
+      document.getElementById(id).onchange = e => {
+        const file = e.target.files[0];
+        if (!file) return;
+        resizeAndEncode(file, data => {
+          document.getElementById(id==='uploadA'?'imageA':'imageB').value = data;
+          updatePreview();
+        });
+      };
+    });
+    document.getElementById('uploadSound').onchange = e => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        refs.sound.value = reader.result; updatePreview();
+      };
+      reader.readAsDataURL(file);
+    };
+
+    // Live preview triggers
+    ['name','creator','imageA','imageB','sound','velocity','type','autoResize','convertPNG','schemaVersion']
+      .forEach(id => document.getElementById(id).addEventListener('input', updatePreview));
+
+    function updatePreview() {
+      clearError();
+      const t = refs.type.value;
+      if (!t) {
+        displayError('⚠️ Please select a fidget type!');
+        refs.preview.textContent = '{}';
+        refs.spinnerContainer.classList.add('hidden');
+        return;
+      }
+      if (!refs.imageA.value.trim()) {
+        displayError('❌ imageA is required! Upload or paste a Data URL.');
+        refs.preview.textContent = '{}';
+        refs.spinnerContainer.classList.add('hidden');
+        return;
+      }
+
+      const schemaVer = refs.advToggle.checked && refs.schemaInput.value.trim()
+        ? refs.schemaInput.value.trim()
+        : '1.0';
+
+      const obj = {
+        schemaVersion: schemaVer,
+        type: t,
+        name: refs.name.value.trim() || 'Untitled Fidget',
+        author: refs.creator.value.trim() || undefined,
+        imageA: refs.imageA.value.trim()
+      };
+      if (t === 'toggle') {
+        if (refs.imageB.value.trim()) obj.imageB = refs.imageB.value.trim();
+        if (refs.sound.value.trim()) obj.sound = refs.sound.value.trim();
+      }
+      if (t === 'spinner') {
+        let v = parseFloat(refs.velocity.value);
+        if (isNaN(v) || v <= 0) v = 40;
+        obj.velocity = v;
+      }
+      refs.preview.textContent = JSON.stringify(obj, null, 2);
+
+      if (t === 'spinner') {
+        refs.spinnerImg.src = obj.imageA;
+        const duration = (2 * Math.PI) / obj.velocity;
+        refs.spinnerImg.style.animation = `spin ${duration}s linear infinite`;
+        refs.spinnerContainer.classList.remove('hidden');
+      } else {
+        refs.spinnerContainer.classList.add('hidden');
+      }
+    }
+
+    function downloadFidget() {
+      updatePreview();
+      if (refs.errors.textContent) return;
+      const blob = new Blob([refs.preview.textContent], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      const name = JSON.parse(refs.preview.textContent).name || 'fidget';
+      a.download = name.replace(/\s+/g, '_') + '.fidget';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    // Initialize
+    updatePreview();
+  </script>
 </body>
 </html>

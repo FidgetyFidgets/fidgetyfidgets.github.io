@@ -46,7 +46,7 @@
 <div class="section">
     <h2>🔨 Schema Versions</h2>
     <ul>
-      <li><strong><code>0.9</code></strong>: The current version. Documented below.</li>
+      <li><strong><code>1.0</code></strong>: The current version. Documented below.</li>
     </ul>
   </div>
 
@@ -57,7 +57,7 @@
       <li><strong><code>name</code></strong> : Display name for your fidget</li>
       <li><strong><code>imageA</code></strong> : Base64-encoded image for default state</li>
       <li><strong><code>sound</code></strong> (optional) : Base64-encoded audio for click/interaction</li>
-      <li><strong><code>version</code></strong> (optional but strongly recommended) : Schema Version (e.g. <code>"0.9"</code>)</li>
+      <li><strong><code>schemaVersion</code></strong> (optional but strongly recommended) : Schema Version (e.g. <code>"0.9"</code>)</li>
       <li><strong><code>author</code></strong> (optional) : Creator of the fidget (e.g. <code>"Con and Sneaky"</code>)</li>
 
     </ul>
@@ -75,7 +75,7 @@
     <h2>🌀 Spinner-Type Fields</h2>
     <p>When <code>type</code> is <code>"spinner"</code>, you may add:</p>
     <ul>
-      <li><strong><code>speed</code></strong> (not yet functional) : Full rotations per second (number)</li>
+      <li><strong><code>angvelocity</code></strong> (required) : Angular velocity for the physics engine to push the Fidget Spinner with (number)</li>
     </ul>
   </div>
 
@@ -97,13 +97,13 @@
   "type": "spinner",
   "name": "Retro SpinX",
   "imageA": "data:image/png;base64,AAABAAEAICAAAAE…",
-  "speed": 3.0,
+  "speed": 40,
 }
     </code></pre>
   </div>
 
   <footer>
-    Made with ❤️ by Con &amp; Sneaky • v0.9.0 • June 2025
+    Made with ❤️ by Con &amp; Sneaky • v1.0 • June 2025
   </footer>
 
 </body>
