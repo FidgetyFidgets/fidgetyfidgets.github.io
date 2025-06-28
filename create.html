@@ -19,14 +19,17 @@
       background: linear-gradient(135deg, #fdfbfb, var(--bg));
       color: var(--text);
       font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      flex-direction: column;
       min-height: 100vh;
-      display: flex; flex-direction: column;
     }
     header {
       background: var(--primary);
       padding: 1rem;
-      color: white; text-align: center;
-      font-size: 1.5rem; font-weight: bold;
+      color: white;
+      text-align: center;
+      font-size: 1.5rem;
+      font-weight: bold;
     }
     main {
       flex: 1;
@@ -81,8 +84,7 @@
     .slider {
       position: absolute;
       cursor: pointer;
-      top: 0; left: 0;
-      right: 0; bottom: 0;
+      top: 0; left: 0; right: 0; bottom: 0;
       background-color: #ccc;
       transition: background-color var(--transition);
       border-radius: var(--radius);
@@ -241,8 +243,10 @@
     function resizeAndEncode(file, cb) {
       const reader = new FileReader();
       reader.onload = () => {
-        const doResize = refs.advToggle.checked && refs.autoResize.checked;
-        const doConvert = refs.advToggle.checked && refs.convertPNG.checked;
+        // default to resize+convert when advanced OFF,
+        // when advanced ON respect the toggles
+        const doResize  = !refs.advToggle.checked || refs.autoResize.checked;
+        const doConvert = !refs.advToggle.checked || refs.convertPNG.checked;
         if (!doResize && !doConvert) return cb(reader.result);
 
         const img = new Image();
@@ -261,7 +265,7 @@
       reader.readAsDataURL(file);
     }
 
-    // File input handlers
+    // File inputs
     ['uploadA','uploadB'].forEach(id => {
       document.getElementById(id).onchange = e => {
         const file = e.target.files[0];
@@ -277,7 +281,8 @@
       if (!file) return;
       const reader = new FileReader();
       reader.onload = () => {
-        refs.sound.value = reader.result; updatePreview();
+        refs.sound.value = reader.result;
+        updatePreview();
       };
       reader.readAsDataURL(file);
     };
