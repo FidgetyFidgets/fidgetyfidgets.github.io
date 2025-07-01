@@ -1,368 +1,227 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Fidget Creator</title>
-  <style>
-    :root {
-      --primary: #ff5588;
-      --primary-dark: #e04178;
-      --bg: #eef2f3;
-      --text: #222;
-      --error: #cc4444;
-      --radius: 12px;
-      --transition: 0.2s ease;
-    }
-    * { box-sizing: border-box; margin:0; padding:0 }
-    body {
-      background: linear-gradient(135deg,#fdfbfb,var(--bg));
-      color: var(--text);
-      font-family: 'Segoe UI',sans-serif;
-      display: flex; flex-direction: column;
-      min-height: 100vh;
-    }
-    header {
-      background: var(--primary); color:#fff;
-      padding:1rem; text-align:center;
-      font-size:1.5rem; font-weight:bold;
-    }
-    main {
-      flex:1; max-width:720px;
-      margin:2rem auto; padding:0 1rem;
-    }
-    .field-row {
-      display:flex; align-items:center;
-      justify-content:space-between;
-      margin-bottom:1rem;
-    }
-    label, .field-row span { font-weight:600 }
-    input[type=text], input[type=number],
-    select, textarea, button {
-      width:100%; font:inherit; padding:.6rem;
-      border:1px solid #ccc; border-radius:var(--radius);
-      transition:border var(--transition),
-                 background var(--transition);
-      margin-bottom:1rem;
-    }
-    textarea { resize:vertical }
-    button {
-      background:var(--primary); color:#fff;
-      border:none; cursor:pointer;
-      border-radius:var(--radius);
-    }
-    button:hover {
-      background:var(--primary-dark);
-      transform:translateY(-2px);
-      box-shadow:0 4px 8px rgba(0,0,0,.1);
-    }
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8" /> <meta name="viewport" content="width=device-width,initial-scale=1.0" /> <title>Fidget Creator</title> <style> :root { --primary: #ff5588; --primary-dark: #e04178; --glass-bg: rgba(255,255,255,0.6); --radius: 12px; --blur: blur(14px); } * { box-sizing: border-box; margin:0; padding:0 } body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #ffb6c1, #ffe8f0, #f0e5ff, #c1f1ff); background-size: 400% 400%; animation: gradientShift 15s ease infinite; color: #222; } @keyframes gradientShift { 0%   { background-position: 0% 50% } 50%  { background-position: 100% 50% } 100% { background-position: 0% 50% } } .container { max-width: 800px; margin: 3rem auto; padding: 2rem; background: var(--glass-bg); backdrop-filter: var(--blur); border-radius: var(--radius); box-shadow: 0 8px 32px rgba(0,0,0,0.1); } h1 { text-align: center; color: var(--primary-dark); margin-bottom: 1rem; } .field, .switch-row { margin-bottom: 1rem; } label { display: block; font-weight: 600; margin-bottom: 0.25rem; } input[type="text"], input[type="number"], select, textarea { width: 100%; padding: 0.6rem; font: inherit; border: 1px solid #ccc; border-radius: var(--radius); margin-bottom: 0.5rem; } input[type="file"] { margin-bottom: 0.5rem; } button { display: block; width: 100%; padding: 0.6rem; font-weight: bold; background: var(--primary); color: white; border: none; border-radius: var(--radius); cursor: pointer; margin-top: 1rem; } button:hover { background: var(--primary-dark); } .switch-row { display: flex; justify-content: space-between; align-items: center; } .switch { position: relative; width: 50px; height: 26px; } .switch input { opacity: 0; width: 0; height: 0; } .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: #ccc; border-radius: var(--radius); transition: background 0.2s; } .slider::before { content: ""; position: absolute; width: 20px; height: 20px; left: 3px; bottom: 3px; background: white; border-radius: 50%; transition: transform 0.2s; } .switch input:checked + .slider { background: var(--primary); } .switch input:checked + .slider::before { transform: translateX(24px); } .hidden { display: none } #errorOutput { color: #cc4444; font-weight: bold; margin-top: 1rem; } pre { background: #fff; padding: 1rem; border-radius: var(--radius); border: 1px solid #ddd; font-family: monospace; font-size: 0.9rem; white-space: pre-wrap; word-break: break-word; margin-top: 1rem; } #spinnerPreviewContainer { text-align: center; margin-top: 1rem; } #spinnerPreview { width: 128px; height: 128px; animation: spin 1s linear infinite; } @keyframes spin { from { transform: rotate(0deg) } to   { transform: rotate(360deg) } } </style> </head> <body> <div class="container"> <h1>✨ Fidget Creator</h1>
 
-    /* SWITCH */
-    .switch {
-      position: relative;
-      display:inline-block;
-      width:50px; height:26px;
+<div class="field">
+  <label>Import existing <code>.fidget</code> file</label>
+  <input type="file" id="importFidget" accept=".fidget,application/json" />
+</div>
+
+<div class="switch-row">
+  <span>Advanced Mode</span>
+  <label class="switch">
+    <input type="checkbox" id="advancedToggle" />
+    <span class="slider"></span>
+  </label>
+</div>
+
+<div id="advancedSettings" class="hidden">
+  <div class="switch-row">
+    <span>Auto-resize images</span>
+    <label class="switch">
+      <input type="checkbox" id="autoResize" checked />
+      <span class="slider"></span>
+    </label>
+  </div>
+  <div class="switch-row">
+    <span>Convert to PNG</span>
+    <label class="switch">
+      <input type="checkbox" id="convertPNG" checked />
+      <span class="slider"></span>
+    </label>
+  </div>
+  <label>Schema Version</label>
+  <input type="text" id="schemaVersion" value="1.0" />
+</div>
+
+<label>Name</label>
+<input type="text" id="name" placeholder="e.g. Bubble Pop" />
+
+<label>Creator</label>
+<input type="text" id="creator" placeholder="Your name" />
+
+<label>Type</label>
+<select id="type" onchange="handleTypeChange()">
+  <option value="">— Select —</option>
+  <option value="toggle">Toggle</option>
+  <option value="spinner">Spinner</option>
+</select>
+
+<label>imageA upload</label>
+<input type="file" id="uploadA" accept="image/*" />
+<textarea id="imageA" placeholder="Data URL for imageA..."></textarea>
+
+<div id="toggleSection" class="hidden">
+  <label>imageB upload</label>
+  <input type="file" id="uploadB" accept="image/*" />
+  <textarea id="imageB" placeholder="Data URL for imageB (optional)"></textarea>
+
+  <label>Sound upload</label>
+  <input type="file" id="uploadSound" accept="audio/*" />
+  <textarea id="sound" placeholder="Data URL for sound (optional)"></textarea>
+</div>
+
+<div id="spinnerSection" class="hidden">
+  <label>Angular Velocity (rad/s)</label>
+  <input type="number" id="velocity" placeholder="Default: 40" step="0.1" />
+  <div id="spinnerPreviewContainer">
+    <img id="spinnerPreview" src="" alt="spinner preview" />
+  </div>
+</div>
+
+<button onclick="downloadFidget()">📦 Download .fidget</button>
+<div id="errorOutput"></div>
+<pre id="previewOutput">{}</pre>
+
+</div>
+
+<script> const refs = { importFidget: document.getElementById('importFidget'), advToggle:    document.getElementById('advancedToggle'), advPanel:     document.getElementById('advancedSettings'), autoResize:   document.getElementById('autoResize'), convertPNG:   document.getElementById('convertPNG'), schema:       document.getElementById('schemaVersion'), name:         document.getElementById('name'), creator:      document.getElementById('creator'), type:         document.getElementById('type'), imageA:       document.getElementById('imageA'), uploadA:      document.getElementById('uploadA'), imageB:       document.getElementById('imageB'), uploadB:      document.getElementById('uploadB'), sound:        document.getElementById('sound'), uploadSound:  document.getElementById('uploadSound'), velocity:     document.getElementById('velocity'), preview:      document.getElementById('previewOutput'), errors:       document.getElementById('errorOutput'), spinnerImg:   document.getElementById('spinnerPreview'), spinnerCont:  document.getElementById('spinnerSection') };
+
+// Advanced toggle
+refs.advToggle.onchange = () => {
+  refs.advPanel.classList.toggle('hidden', !refs.advToggle.checked);
+  updatePreview();
+};
+
+// Import existing .fidget
+refs.importFidget.onchange = e => {
+  const f = e.target.files[0];
+  if (!f) return;
+  const r = new FileReader();
+  r.onload = () => {
+    try {
+      const data = JSON.parse(r.result);
+      refs.name.value     = data.name     || '';
+      refs.creator.value  = data.author   || '';
+      refs.type.value     = data.type     || '';
+      refs.imageA.value   = data.imageA   || '';
+      refs.imageB.value   = data.imageB   || '';
+      refs.sound.value    = data.sound    || '';
+      refs.velocity.value = data.velocity || '';
+      refs.schema.value   = data.schemaVersion || '1.0';
+      refs.advToggle.checked = true;
+      refs.advPanel.classList.remove('hidden');
+      handleTypeChange();
+      updatePreview();
+    } catch {
+      refs.errors.textContent = '❌ Not a valid .fidget file.';
     }
-    .switch input {
-      position:absolute; opacity:0;
-      width:0; height:0;
-    }
-    .slider {
-      position:absolute; cursor:pointer;
-      top:0; left:0; right:0; bottom:0;
-      background:#ccc; border-radius:var(--radius);
-      transition: background var(--transition);
-    }
-    .slider::before {
-      position:absolute; content:"";
-      height:20px; width:20px;
-      left:3px; bottom:3px;
-      background:#fff; border-radius:50%;
-      transition: transform var(--transition);
-    }
-    .switch input:checked + .slider {
-      background:var(--primary);
-    }
-    .switch input:checked + .slider::before {
-      transform: translateX(24px);
-    }
+  };
+  r.readAsText(f);
+};
 
-    .hidden { display:none }
-    .preview, .errors {
-      white-space:pre-wrap; background:#fff;
-      padding:1rem; border-radius:var(--radius);
-      border:1px solid #ddd;
-      font-family:monospace; font-size:.9rem;
-      margin-top:1rem;
-    }
-    .errors { color:var(--error) }
-    #spinnerPreviewContainer {
-      text-align:center; margin-top:1rem;
-      transition:opacity var(--transition);
-    }
-    #spinnerPreview { width:128px; height:128px }
+// Show/hide sections based on type
+function handleTypeChange() {
+  const t = refs.type.value;
+  document.getElementById('toggleSection')
+    .classList.toggle('hidden', t !== 'toggle');
+  document.getElementById('spinnerSection')
+    .classList.toggle('hidden', t !== 'spinner');
+  updatePreview();
+}
 
-    @keyframes spin {
-      from{transform:rotate(0deg)}
-      to{transform:rotate(360deg)}
-    }
-  </style>
-</head>
-<body>
-  <header>✨ Fidget Creator</header>
-  <main>
-    <p>Create your own <code>.fidget</code> file with live preview!</p>
-
-    <!-- Advanced Mode Switch -->
-    <div class="field-row">
-      <span>Advanced Mode</span>
-      <label class="switch">
-        <input type="checkbox" id="advancedToggle"/>
-        <span class="slider"></span>
-      </label>
-    </div>
-
-    <!-- Advanced Panel -->
-    <div id="advancedSettings" class="hidden"
-         style="padding:.5rem 1rem;
-                border:1px dashed #ccc;
-                border-radius:var(--radius);
-                margin-bottom:1rem;">
-      <div class="field-row">
-        <span>Auto-resize to 256×256</span>
-        <label class="switch">
-          <input type="checkbox" id="autoResize" checked/>
-          <span class="slider"></span>
-        </label>
-      </div>
-      <div class="field-row">
-        <span>Convert to PNG</span>
-        <label class="switch">
-          <input type="checkbox" id="convertPNG" checked/>
-          <span class="slider"></span>
-        </label>
-      </div>
-      <label>Schema Version</label>
-      <input type="text" id="schemaVersion"
-             placeholder="e.g. 1.0" value="1.0"/>
-    </div>
-
-    <label>Name</label>
-    <input type="text" id="name" placeholder="e.g. Bubble Pop"/>
-
-    <label>Creator</label>
-    <input type="text" id="creator" placeholder="Your name"/>
-
-    <label>Type</label>
-    <select id="type" onchange="handleTypeChange()">
-      <option value="">— Select —</option>
-      <option value="toggle">Toggle</option>
-      <option value="spinner">Spinner</option>
-    </select>
-
-    <label>imageA upload</label>
-    <input type="file" id="uploadA"
-           accept="image/png,image/jpeg,image/webp,image/svg+xml,image/gif"/>
-    <textarea id="imageA"
-              placeholder="Data URL for imageA…"></textarea>
-
-    <div id="toggleSection" class="hidden">
-      <label>imageB upload</label>
-      <input type="file" id="uploadB"
-             accept="image/png,image/jpeg,image/webp,image/svg+xml,image/gif"/>
-      <textarea id="imageB"
-                placeholder="Data URL for imageB (optional)…"></textarea>
-
-      <label>Sound upload</label>
-      <input type="file" id="uploadSound"
-             accept="audio/mp3,audio/ogg"/>
-      <textarea id="sound"
-                placeholder="Data URL for sound (optional)…"></textarea>
-    </div>
-
-    <div id="spinnerSection" class="hidden">
-      <label>Angular Velocity (rad/s)</label>
-      <input type="number" id="velocity"
-             placeholder="Default: 40" step="0.1"/>
-    </div>
-
-    <button onclick="downloadFidget()">📦 Download .fidget</button>
-
-    <div class="errors hidden" id="errorOutput"></div>
-    <div class="preview" id="previewOutput">{}</div>
-
-    <div id="spinnerPreviewContainer" class="hidden">
-      <img id="spinnerPreview"/>
-    </div>
-  </main>
-
-  <footer style="text-align:center; padding:1rem; color:#888;">
-    © 2025 Fidgety Web Portal — 
-    <a href="https://fidgetyfidgets.github.io" target="_blank">
-      fidgetyfidgets.github.io
-    </a>
-  </footer>
-
-  <script>
-    const refs = {
-      advToggle:  document.getElementById('advancedToggle'),
-      advSettings:document.getElementById('advancedSettings'),
-      autoResize: document.getElementById('autoResize'),
-      convertPNG: document.getElementById('convertPNG'),
-      schemaInput:document.getElementById('schemaVersion'),
-      name:       document.getElementById('name'),
-      creator:    document.getElementById('creator'),
-      type:       document.getElementById('type'),
-      imageA:     document.getElementById('imageA'),
-      imageB:     document.getElementById('imageB'),
-      sound:      document.getElementById('sound'),
-      velocity:   document.getElementById('velocity'),
-      preview:    document.getElementById('previewOutput'),
-      errors:     document.getElementById('errorOutput'),
-      spinnerContainer: document.getElementById('spinnerPreviewContainer'),
-      spinnerImg: document.getElementById('spinnerPreview')
+// Resize/convert logic
+function resizeAndEncode(file, cb) {
+  const reader = new FileReader();
+  reader.onload = () => {
+    const doResize  = !refs.advToggle.checked || refs.autoResize.checked;
+    const doConvert = !refs.advToggle.checked || refs.convertPNG.checked;
+    if (!doResize && !doConvert) return cb(reader.result);
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width  = doResize ? 256 : img.width;
+      canvas.height = doResize ? 256 : img.height;
+      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+      const mime = doConvert ? 'image/png' : file.type;
+      cb(canvas.toDataURL(mime));
     };
+    img.src = reader.result;
+  };
+  reader.readAsDataURL(file);
+}
 
-    // toggle advanced panel
-    refs.advToggle.addEventListener('change', () => {
-      refs.advSettings.classList.toggle('hidden', !refs.advToggle.checked);
-      updatePreview();
-    });
-
-    function displayError(msg) {
-      refs.errors.textContent = msg;
-      refs.errors.classList.remove('hidden');
-    }
-    function clearError() {
-      refs.errors.classList.add('hidden');
-      refs.errors.textContent = '';
-    }
-
-    function handleTypeChange() {
-      const t = refs.type.value;
-      document.getElementById('toggleSection')
-              .classList.toggle('hidden', t!=='toggle');
-      document.getElementById('spinnerSection')
-              .classList.toggle('hidden', t!=='spinner');
-      updatePreview();
-    }
-
-    function resizeAndEncode(file, cb) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        // default to resize+convert when advanced is OFF;
-        // when advanced ON, respect the two switches:
-        const doResize  = !refs.advToggle.checked || refs.autoResize.checked;
-        const doConvert = !refs.advToggle.checked || refs.convertPNG.checked;
-        if (!doResize && !doConvert) return cb(reader.result);
-
-        const img = new Image();
-        img.onload = () => {
-          const canvas = document.createElement('canvas');
-          const w = doResize ? 256 : img.width;
-          const h = doResize ? 256 : img.height;
-          canvas.width = w; canvas.height = h;
-          canvas.getContext('2d').drawImage(img,0,0,w,h);
-          const outputType = doConvert ? 'image/png' : file.type;
-          cb(canvas.toDataURL(outputType));
-        };
-        img.src = reader.result;
-      };
-      reader.readAsDataURL(file);
-    }
-
-    // file handlers
-    ['uploadA','uploadB'].forEach(id=>{
-      document.getElementById(id).onchange = e=>{
-        const f=e.target.files[0];
-        if(!f) return;
-        resizeAndEncode(f, data=>{
-          document.getElementById(id==='uploadA'?'imageA':'imageB').value = data;
-          updatePreview();
-        });
-      };
-    });
-    document.getElementById('uploadSound').onchange = e=>{
+// File inputs
+[ ['uploadA','imageA'], ['uploadB','imageB'] ]
+  .forEach(([up,ta]) => {
+    refs[up].onchange = e => {
       const f = e.target.files[0];
-      if(!f) return;
-      const r=new FileReader();
-      r.onload=()=>{ refs.sound.value=r.result; updatePreview() };
-      r.readAsDataURL(f);
+      if (!f) return;
+      resizeAndEncode(f, data => {
+        refs[ta].value = data;
+        updatePreview();
+      });
     };
+  });
+refs.uploadSound.onchange = e => {
+  const f = e.target.files[0];
+  if (!f) return;
+  const r = new FileReader();
+  r.onload = () => { refs.sound.value = r.result; updatePreview(); };
+  r.readAsDataURL(f);
+};
 
-    // live-preview triggers
-    ['name','creator','imageA','imageB','sound','velocity','type',
-     'autoResize','convertPNG','schemaVersion']
-      .forEach(id=>
-        document.getElementById(id)
-                .addEventListener('input', updatePreview)
-      );
+// Live preview & validation
+[ 'name','creator','imageA','imageB','sound',
+  'velocity','type','autoResize','convertPNG','schema' ]
+  .forEach(id => {
+    document.getElementById(id)
+            .addEventListener('input', updatePreview);
+  });
 
-    function updatePreview(){
-      clearError();
-      const t = refs.type.value;
-      if(!t){
-        displayError('⚠️ Please select a fidget type!');
-        refs.preview.textContent='{}';
-        refs.spinnerContainer.classList.add('hidden');
-        return;
-      }
-      if(!refs.imageA.value.trim()){
-        displayError('❌ imageA is required! Upload or paste a Data URL.');
-        refs.preview.textContent='{}';
-        refs.spinnerContainer.classList.add('hidden');
-        return;
-      }
+function updatePreview() {
+  refs.errors.textContent = '';
+  const t = refs.type.value;
+  if (!t) {
+    refs.errors.textContent = '⚠️ Please select a fidget type!';
+    refs.preview.textContent = '{}';
+    return;
+  }
+  if (!refs.imageA.value.trim()) {
+    refs.errors.textContent = '❌ imageA is required!';
+    refs.preview.textContent = '{}';
+    return;
+  }
+  const schemaVer = refs.advToggle.checked && refs.schema.value.trim()
+                    ? refs.schema.value.trim() : '1.0';
+  const obj = {
+    schemaVersion: schemaVer,
+    type:          t,
+    name:          refs.name.value.trim() || 'Untitled Fidget',
+    author:        refs.creator.value.trim() || undefined,
+    imageA:        refs.imageA.value.trim()
+  };
+  if (t === 'toggle') {
+    if (refs.imageB.value.trim()) obj.imageB = refs.imageB.value.trim();
+    if (refs.sound.value.trim())  obj.sound  = refs.sound.value.trim();
+  }
+  if (t === 'spinner') {
+    let v = parseFloat(refs.velocity.value);
+    if (isNaN(v) || v <= 0) v = 40;
+    obj.velocity = v;
+    refs.spinnerImg.src = obj.imageA;
+    const dur = (2 * Math.PI) / obj.velocity;
+    refs.spinnerImg.style.animation = `spin ${dur}s linear infinite`;
+  }
+  refs.preview.textContent = JSON.stringify(obj, null, 2);
+}
 
-      const schemaVer = (refs.advToggle.checked && refs.schemaInput.value.trim())
-                        ? refs.schemaInput.value.trim()
-                        : '1.0';
+// Download .fidget
+function downloadFidget() {
+  updatePreview();
+  if (refs.errors.textContent) return;
+  const blob = new Blob([refs.preview.textContent], { type:'application/json' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  const nm   = JSON.parse(refs.preview.textContent).name || 'fidget';
+  a.href     = url;
+  a.download = nm.replace(/\s+/g,'_') + '.fidget';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
 
-      const obj = {
-        schemaVersion: schemaVer,
-        type:          t,
-        name:          refs.name.value.trim()||'Untitled Fidget',
-        author:        refs.creator.value.trim()||undefined,
-        imageA:        refs.imageA.value.trim()
-      };
-      if(t==='toggle'){
-        if(refs.imageB.value.trim()) obj.imageB=refs.imageB.value.trim();
-        if(refs.sound.value.trim())  obj.sound = refs.sound.value.trim();
-      }
-      if(t==='spinner'){
-        let v=parseFloat(refs.velocity.value);
-        if(isNaN(v)||v<=0) v=40;
-        obj.velocity=v;
-      }
-      refs.preview.textContent=JSON.stringify(obj,null,2);
+// init
+handleTypeChange();
+updatePreview();
 
-      if(t==='spinner'){
-        refs.spinnerImg.src=obj.imageA;
-        const duration=(2*Math.PI)/obj.velocity;
-        refs.spinnerImg.style.animation=`spin ${duration}s linear infinite`;
-        refs.spinnerContainer.classList.remove('hidden');
-      } else {
-        refs.spinnerContainer.classList.add('hidden');
-      }
-    }
-
-    function downloadFidget(){
-      updatePreview();
-      if(refs.errors.textContent) return;
-      const blob=new Blob([refs.preview.textContent],
-                          {type:'application/json'});
-      const url=URL.createObjectURL(blob);
-      const a=document.createElement('a');
-      a.href=url;
-      const name=JSON.parse(refs.preview.textContent).name||'fidget';
-      a.download=name.replace(/\s+/g,'_')+'.fidget';
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(url);
-    }
-
-    updatePreview();
-  </script>
-</body>
-</html>
+</script> </body> </html>
