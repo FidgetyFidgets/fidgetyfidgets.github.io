@@ -1,0 +1,39 @@
+[
+  {
+    "key": "webportal",
+    "title": "Web Portal",
+    "desc": "Explore, upload, and preview your interactive .fidget widgets directly in the browser.",
+    "href": "/webportal",
+    "icon": "🧩",
+    "image": "/images/portal-preview.png"
+  },
+  {
+    "key": "creator",
+    "title": "Fidget Creator",
+    "desc": "Design and export your own .fidget files with images, sounds, and motion. No code needed.",
+    "href": "/create",
+    "icon": "🎨",
+    "image": "/images/create-preview.png"
+  },
+  {
+    "key": "learn",
+    "title": "Learn",
+    "desc": "Dive into guides, file format docs, and examples for how Fidgety works under the hood.",
+    "href": "/learn",
+    "icon": "📚"
+  },
+  {
+    "key": "news",
+    "title": "News",
+    "desc": "See what’s new with Fidgety—from updates to tutorials and featured creations.",
+    "href": "/news",
+    "icon": "📰"
+  },
+  {
+    "key": "github",
+    "title": "GitHub",
+    "desc": "Browse the source code, submit issues, and contribute via the Fidgety GitHub presence.",
+    "href": "https://github.com/fidgetyfidgets",
+    "icon": "🐙"
+  }
+]

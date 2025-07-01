@@ -1,116 +1,207 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
   <title>Fidgety</title>
   <style>
     :root {
-      --glass: rgba(255,255,255,0.25);
-      --blur: 18px;
-      --radius: 16px;
-      --text: #fff;
+      --primary: #ff5588;
+      --bg-light: linear-gradient(135deg, #ffe8f0, #f0e5ff);
+      --bg-dark:  linear-gradient(135deg, #2a2233, #1e1e2e);
+      --text-light: #333;
+      --text-dark:  #eee;
+      --glass: rgba(255,255,255,0.7);
+      --glass-dark: rgba(0,0,0,0.4);
+      --blur: 14px;
+      --radius: 14px;
     }
+
     * { box-sizing: border-box; margin: 0; padding: 0 }
     html, body {
       height: 100%;
       font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(-45deg, #ff6ec4, #7873f5, #4ae8f8, #f3f38f);
-      background-size: 600% 600%;
-      animation: hueShift 18s ease infinite;
-      color: var(--text);
+      transition: background 0.3s ease;
     }
-    @keyframes hueShift {
-      0% { background-position: 0% 50% }
-      50% { background-position: 100% 50% }
-      100% { background-position: 0% 50% }
+    body[data-theme="light"] {
+      background: var(--bg-light);
+      color: var(--text-light);
     }
-    .container {
-      max-width: 860px;
+    body[data-theme="dark"] {
+      background: var(--bg-dark);
+      color: var(--text-dark);
+    }
+
+    .app {
+      display: flex;
+      max-width: 960px;
+      width: 100%;
+      height: 600px;
       margin: auto;
-      padding: 4rem 2rem;
+      border-radius: var(--radius);
+      overflow: hidden;
+      backdrop-filter: blur(var(--blur));
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    }
+
+    .sidebar {
+      width: 240px;
+      padding: 1.5rem;
+      background: var(--glass);
+    }
+    body[data-theme="dark"] .sidebar {
+      background: var(--glass-dark);
+    }
+
+    .sidebar h1 {
+      font-size: 1.4rem;
+      color: var(--primary);
+      margin-bottom: 1.5rem;
+    }
+
+    .sidebar ul {
+      list-style: none;
+    }
+    .sidebar li {
+      margin-bottom: 1rem;
+    }
+    .sidebar button {
+      background: none;
+      border: none;
+      font-size: 1rem;
+      color: inherit;
+      cursor: pointer;
+      width: 100%;
+      text-align: left;
+      padding: 0.4rem 0.6rem;
+      border-radius: 8px;
+    }
+    .sidebar button:hover,
+    .sidebar button.active {
+      background: rgba(255,255,255,0.25);
+      font-weight: 600;
+    }
+
+    .toggle-theme {
+      font-size: 0.9rem;
+      margin-top: 2rem;
+      cursor: pointer;
+      text-decoration: underline;
+      color: inherit;
+    }
+
+    .content {
+      flex-grow: 1;
+      padding: 2rem;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      text-align: center;
-    }
-    h1 {
-      font-size: 3rem;
-      font-weight: 700;
-      margin-bottom: 1rem;
-      letter-spacing: 0.5px;
-    }
-    p.lead {
-      font-size: 1.25rem;
-      margin-bottom: 2.5rem;
-      max-width: 600px;
-    }
-    nav {
-      background: var(--glass);
-      backdrop-filter: blur(var(--blur));
-      padding: 1.5rem;
-      border-radius: var(--radius);
-      box-shadow: 0 8px 30px rgba(0,0,0,0.15);
-      display: flex;
-      flex-wrap: wrap;
       gap: 1.5rem;
-      justify-content: center;
     }
-    nav a {
-      font-weight: 600;
+
+    .content h2 {
+      font-size: 1.6rem;
+      color: var(--primary);
+    }
+
+    .content img {
+      max-width: 100%;
+      border-radius: var(--radius);
+      box-shadow: 0 4px 18px rgba(0,0,0,0.05);
+      display: none;
+    }
+
+    .content p {
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+
+    .launch-btn {
+      display: inline-block;
+      padding: 0.6rem 1.2rem;
+      background: var(--primary);
       color: white;
+      font-weight: 600;
+      border: none;
+      border-radius: var(--radius);
       text-decoration: none;
-      font-size: 1.1rem;
-      padding: 0.4rem 1rem;
-      border-radius: var(--radius);
-      transition: background 0.2s ease;
+      transition: background 0.2s;
     }
-    nav a:hover {
-      background: rgba(255,255,255,0.2);
-    }
-    .images {
-      margin-top: 3rem;
-      display: flex;
-      gap: 1.5rem;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-    .images img {
-      width: 120px;
-      height: 120px;
-      object-fit: contain;
-      border-radius: var(--radius);
-      background: rgba(255,255,255,0.2);
-      padding: 0.5rem;
-    }
-    .footer {
-      margin-top: 4rem;
-      font-size: 0.9rem;
-      opacity: 0.8;
+    .launch-btn:hover {
+      background: #e04178;
     }
   </style>
 </head>
-<body>
-  <div class="container">
-    <h1>✨ Fidgety</h1>
-    <p class="lead">Interactive widgets as self-contained files. Design, test, and share fun!</p>
-
-    <nav>
-      <a href="/webportal">🧩 Web Portal</a>
-      <a href="/create">🎨 Fidget Creator</a>
-      <a href="/learn">📚 Learn</a>
-      <a href="/news">📰 News</a>
-      <a href="https://github.com/fidgetyfidgets">🐙 GitHub</a>
-    </nav>
-
-    <div class="images" aria-label="Sample icons">
-      <img src="/images/fidget-spin.png" alt="Spinner icon" />
-      <img src="/images/fidget-toggle.png" alt="Toggle icon" />
-      <img src="/images/fidget-create.png" alt="Creator icon" />
+<body data-theme="light">
+  <div class="app">
+    <div class="sidebar">
+      <h1>✨ Fidgety</h1>
+      <ul id="menu"></ul>
+      <div class="toggle-theme" onclick="toggleTheme()">Toggle Dark Mode</div>
     </div>
-
-    <div class="footer">
-      © 2025 Fidgety</div>
+    <div class="content">
+      <h2 id="title">Loading…</h2>
+      <img id="preview" alt="Preview" />
+      <p id="desc"></p>
+      <a class="launch-btn" id="launch" href="#">Launch</a>
+    </div>
   </div>
+
+  <script>
+    const menu = document.getElementById("menu");
+    const titleEl = document.getElementById("title");
+    const descEl = document.getElementById("desc");
+    const launchEl = document.getElementById("launch");
+    const preview = document.getElementById("preview");
+    const body = document.body;
+    let pages = [];
+    let currentKey = "";
+
+    fetch("/home.json")
+      .then(res => res.json())
+      .then(json => {
+        pages = json;
+        renderMenu();
+        showPage(pages[0].key);
+      });
+
+    function renderMenu() {
+      pages.forEach(p => {
+        const li = document.createElement("li");
+        const btn = document.createElement("button");
+        btn.textContent = `${p.icon || ""} ${p.title}`;
+        btn.dataset.key = p.key;
+        btn.onclick = () => showPage(p.key);
+        li.appendChild(btn);
+        menu.appendChild(li);
+      });
+    }
+
+    function showPage(key) {
+      const page = pages.find(p => p.key === key);
+      if (!page) return;
+      currentKey = key;
+
+      document.querySelectorAll(".sidebar button").forEach(b => {
+        b.classList.toggle("active", b.dataset.key === key);
+      });
+
+      titleEl.textContent = page.title;
+      descEl.textContent = page.desc;
+      launchEl.href = page.href;
+      launchEl.textContent = `${page.icon || "→"} Launch ${page.title}`;
+      
+      if (page.image) {
+        preview.src = page.image;
+        preview.style.display = "block";
+      } else {
+        preview.style.display = "none";
+      }
+    }
+
+    function toggleTheme() {
+      const current = body.getAttribute("data-theme");
+      body.setAttribute("data-theme", current === "light" ? "dark" : "light");
+    }
+  </script>
 </body>
 </html>
