@@ -6,6 +6,12 @@
     "image": null
   },
   {
+  "title": "Revamped Homepage Launches",
+  "shortContent": "The Fidgety homepage gets a sleek new look with sidebar navigation, dynamic previews, and dark mode support.",
+  "fullContent": "<p>We've rebuilt the Fidgety homepage from the ground up to make exploring your tools smoother and more beautiful than ever. The new layout features:</p><ul><li>🧭 <strong>Sidebar navigation</strong> for quick access to all major sections</li><li>🖼 <strong>Dynamic previews</strong> that update as you browse</li><li>🌘 <strong>Dark mode toggle</strong> so you can work in style any time of day</li><li>🧩 <strong>Launch buttons</strong> with icons and detail views for each app</li></ul><p>And it's all powered by a single <code>/home.json</code> file—making future updates lightning-fast. Check it out at <a href='/'>fidgetyfidgets.github.io</a> and let us know what you think!</p>",
+  "image": null
+  },
+  {
     "title": "News System Now Online",
     "shortContent": "This very page loads news directly from a JSON feed so we can update easily and often!",
     "fullContent": "<p>We just added a dynamic news system. This means:</p><ul><li>No page rebuilds to post updates</li><li>Fully JSON-powered layout</li><li>Expandable previews and inline links</li></ul><p>We’ll post tips, patch notes, and featured creations here—so check back often!</p>",
