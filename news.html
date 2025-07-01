@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Fidgety News</title>
+  <style>
+    :root {
+      --primary:       #ff5588;
+      --bg-start:      #ffe8f0;
+      --bg-end:        #f0e5ff;
+      --glass:         rgba(255,255,255,0.6);
+      --radius:        12px;
+      --blur:          14px;
+      --text:          #333;
+      --card-bg:       rgba(255,255,255,0.8);
+      --button-bg:     #ff5588;
+      --button-hover:  #e14a7a;
+      --button-text:   #fff;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0 }
+    body {
+      min-height: 100vh;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, var(--bg-start), var(--bg-end));
+      background-size: 400% 400%;
+      animation: shift 12s ease infinite;
+      color: var(--text);
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 2rem;
+    }
+    @keyframes shift {
+      0%   { background-position: 0% 50% }
+      50%  { background-position: 100% 50% }
+      100% { background-position: 0% 50% }
+    }
+    .container {
+      width: 100%;
+      max-width: 800px;
+      background: var(--glass);
+      backdrop-filter: blur(var(--blur));
+      border-radius: var(--radius);
+      padding: 2rem;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    }
+    h1 {
+      text-align: center;
+      color: var(--primary);
+      margin-bottom: 1.5rem;
+    }
+    /* List View */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1.5rem;
+    }
+    .card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 1rem;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .card h2 {
+      font-size: 1.2rem;
+      margin-bottom: 0.75rem;
+      color: var(--primary);
+    }
+    .card p {
+      flex-grow: 1;
+      font-size: 0.95rem;
+      line-height: 1.4;
+      margin-bottom: 1rem;
+    }
+    .card button {
+      align-self: flex-end;
+      padding: 0.5rem 1rem;
+      background: var(--button-bg);
+      color: var(--button-text);
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .card button:hover {
+      background: var(--button-hover);
+    }
+    /* Detail View */
+    #detail-view {
+      display: none;
+    }
+    #detail-view .back-btn {
+      display: inline-block;
+      margin-bottom: 1.5rem;
+      padding: 0.4rem 0.8rem;
+      background: var(--button-bg);
+      color: var(--button-text);
+      text-decoration: none;
+      border-radius: var(--radius);
+      transition: background 0.2s;
+    }
+    #detail-view .back-btn:hover {
+      background: var(--button-hover);
+    }
+    #detail-view h2 {
+      color: var(--primary);
+      margin-bottom: 1rem;
+    }
+    #detail-view img {
+      max-width: 100%;
+      border-radius: var(--radius);
+      margin-bottom: 1rem;
+    }
+    #detail-view .content {
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📰 Fidgety News</h1>
+
+    <!-- List of news cards -->
+    <div id="list-view" class="cards">
+      <!-- JS populates cards here -->
+    </div>
+
+    <!-- Detail view template -->
+    <div id="detail-view">
+      <a href="#" class="back-btn">← Back to News</a>
+      <h2 id="detail-title"></h2>
+      <img id="detail-image" src="" alt="" style="display:none;"/>
+      <div id="detail-content" class="content"></div>
+    </div>
+  </div>
+
+  <script>
+    const listView   = document.getElementById('list-view');
+    const detailView = document.getElementById('detail-view');
+    const detailTitle   = document.getElementById('detail-title');
+    const detailImage   = document.getElementById('detail-image');
+    const detailContent = document.getElementById('detail-content');
+
+    let newsData = [];
+
+    // Fetch news JSON
+    fetch('/news.json')
+      .then(res => res.json())
+      .then(data => {
+        newsData = data;
+        renderList();
+      })
+      .catch(err => {
+        listView.innerHTML = '<p style="color:#cc4444;">Failed to load news.</p>';
+        console.error(err);
+      });
+
+    function renderList() {
+      listView.innerHTML = '';
+      newsData.forEach((item, idx) => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <h2>${item.title}</h2>
+          <p>${item.shortContent}</p>
+          <button data-idx="${idx}">Read More</button>
+        `;
+        card.querySelector('button')
+            .addEventListener('click', () => showDetail(idx));
+        listView.appendChild(card);
+      });
+    }
+
+    function showDetail(idx) {
+      const item = newsData[idx];
+      detailTitle.textContent = item.title;
+      if (item.image) {
+        detailImage.src = item.image;
+        detailImage.alt = item.title;
+        detailImage.style.display = 'block';
+      } else {
+        detailImage.style.display = 'none';
+      }
+      detailContent.innerHTML = item.fullContent;
+      listView.style.display   = 'none';
+      detailView.style.display = 'block';
+    }
+
+    // Back button
+    detailView.querySelector('.back-btn').addEventListener('click', e => {
+      e.preventDefault();
+      detailView.style.display = 'none';
+      listView.style.display   = 'grid';
+    });
+  </script>
+</body>
+</html>

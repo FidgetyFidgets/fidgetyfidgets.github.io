@@ -2,82 +2,115 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Fidgety – Virtual Fidgets</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>Fidgety</title>
   <style>
-    body {
-      margin: 0;
-      background-color: #0b0c2a;
-      color: #f0f8ff;
-      font-family: 'Orbitron', sans-serif;
-      text-align: center;
-      padding: 2rem;
+    :root {
+      --glass: rgba(255,255,255,0.25);
+      --blur: 18px;
+      --radius: 16px;
+      --text: #fff;
     }
-
+    * { box-sizing: border-box; margin: 0; padding: 0 }
+    html, body {
+      height: 100%;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(-45deg, #ff6ec4, #7873f5, #4ae8f8, #f3f38f);
+      background-size: 600% 600%;
+      animation: hueShift 18s ease infinite;
+      color: var(--text);
+    }
+    @keyframes hueShift {
+      0% { background-position: 0% 50% }
+      50% { background-position: 100% 50% }
+      100% { background-position: 0% 50% }
+    }
+    .container {
+      max-width: 860px;
+      margin: auto;
+      padding: 4rem 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
     h1 {
       font-size: 3rem;
-      color: #76ff03;
-      text-shadow: 0 0 10px #76ff03;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      letter-spacing: 0.5px;
     }
-
-    p {
+    p.lead {
+      font-size: 1.25rem;
+      margin-bottom: 2.5rem;
       max-width: 600px;
-      margin: 1rem auto;
-      font-size: 1.2rem;
     }
-
-    .downloads {
-      margin-top: 2rem;
+    nav {
+      background: var(--glass);
+      backdrop-filter: blur(var(--blur));
+      padding: 1.5rem;
+      border-radius: var(--radius);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      justify-content: center;
     }
-
-    .fidget {
-      background: #1e1f4a;
-      margin: 1rem;
-      padding: 1rem;
-      border-radius: 10px;
-      box-shadow: 0 0 10px #00e5ff;
-    }
-
-    .fidget a {
-      display: inline-block;
-      margin-top: 0.5rem;
-      color: #00e5ff;
+    nav a {
+      font-weight: 600;
+      color: white;
       text-decoration: none;
-      font-weight: bold;
+      font-size: 1.1rem;
+      padding: 0.4rem 1rem;
+      border-radius: var(--radius);
+      transition: background 0.2s ease;
     }
-
-    #spinner {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      width: 80px;
-      height: 80px;
-      background: url('https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Fidget-spinner-icon.svg/512px-Fidget-spinner-icon.svg.png') no-repeat center/contain;
-      transition: transform 0.3s linear;
+    nav a:hover {
+      background: rgba(255,255,255,0.2);
     }
-
-    #spinner:hover {
-      transform: rotate(360deg);
+    .images {
+      margin-top: 3rem;
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      justify-content: center;
     }
-
-    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+    .images img {
+      width: 120px;
+      height: 120px;
+      object-fit: contain;
+      border-radius: var(--radius);
+      background: rgba(255,255,255,0.2);
+      padding: 0.5rem;
+    }
+    .footer {
+      margin-top: 4rem;
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
   </style>
 </head>
 <body>
-  <h1>Welcome to Fidgety</h1>
-  <p>Need to focus or just love the spin? Check out our premium virtual fidgets and unwind—one swipe at a time.</p>
+  <div class="container">
+    <h1>✨ Fidgety</h1>
+    <p class="lead">Interactive widgets as self-contained files. Design, test, and share fun!</p>
 
-  <div class="downloads">
-    <div class="fidget">
-      <h2>Fidgety Web Portal</h2>
-      <p>Play with all fidgety fidgets online!</p>
-      <a href="/webportal">Launch</a>
+    <nav>
+      <a href="/webportal">🧩 Web Portal</a>
+      <a href="/create">🎨 Fidget Creator</a>
+      <a href="/learn">📚 Learn</a>
+      <a href="/news">📰 News</a>
+      <a href="https://github.com/fidgetyfidgets">🐙 GitHub</a>
+    </nav>
+
+    <div class="images" aria-label="Sample icons">
+      <img src="/images/fidget-spin.png" alt="Spinner icon" />
+      <img src="/images/fidget-toggle.png" alt="Toggle icon" />
+      <img src="/images/fidget-create.png" alt="Creator icon" />
     </div>
-    <div class="fidget">
-      <h2>Fidget Creator</h2>
-      <p>Create your own fidget that you can launch in Fidgety.</p>
-      <a href="/create">Launch</a>
-    </div>
+
+    <div class="footer">
+      © 2025 Fidgety</div>
   </div>
 </body>
 </html>

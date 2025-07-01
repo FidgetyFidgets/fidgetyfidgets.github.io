@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Fidgety – Virtual Fidgets</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: #0b0c2a;
+      color: #f0f8ff;
+      font-family: 'Orbitron', sans-serif;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    h1 {
+      font-size: 3rem;
+      color: #76ff03;
+      text-shadow: 0 0 10px #76ff03;
+    }
+
+    p {
+      max-width: 600px;
+      margin: 1rem auto;
+      font-size: 1.2rem;
+    }
+
+    .downloads {
+      margin-top: 2rem;
+    }
+
+    .fidget {
+      background: #1e1f4a;
+      margin: 1rem;
+      padding: 1rem;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #00e5ff;
+    }
+
+    .fidget a {
+      display: inline-block;
+      margin-top: 0.5rem;
+      color: #00e5ff;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    #spinner {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 80px;
+      height: 80px;
+      background: url('https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Fidget-spinner-icon.svg/512px-Fidget-spinner-icon.svg.png') no-repeat center/contain;
+      transition: transform 0.3s linear;
+    }
+
+    #spinner:hover {
+      transform: rotate(360deg);
+    }
+
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+  </style>
+</head>
+<body>
+  <h1>Welcome to Fidgety</h1>
+  <p>Need to focus or just love the spin? Check out our premium virtual fidgets and unwind—one swipe at a time.</p>
+
+  <div class="downloads">
+    <div class="fidget">
+      <h2>Fidgety Web Portal</h2>
+      <p>Play with all fidgety fidgets online!</p>
+      <a href="/webportal">Launch</a>
+    </div>
+    <div class="fidget">
+      <h2>Fidget Creator</h2>
+      <p>Create your own fidget that you can launch in Fidgety.</p>
+      <a href="/create">Launch</a>
+    </div>
+  </div>
+</body>
+</html>

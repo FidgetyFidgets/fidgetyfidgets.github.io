@@ -1,0 +1,14 @@
+[
+  {
+    "title": "Fidget Creator 1.1 Released",
+    "shortContent": "The Creator tool now supports importing existing .fidget files and velocity previews.",
+    "fullContent": "<p>The <strong>Fidget Creator</strong> has been upgraded to version 1.1! You can now:</p><ul><li>Import existing .fidget files</li><li>Preview spinner velocity in real-time</li><li>Toggle advanced metadata controls</li></ul><p>Give it a try at <a href='/create'>/create</a>!</p>",
+    "image": null
+  },
+  {
+    "title": "News System Now Online",
+    "shortContent": "This very page loads news directly from a JSON feed so we can update easily and often!",
+    "fullContent": "<p>We just added a dynamic news system. This means:</p><ul><li>No page rebuilds to post updates</li><li>Fully JSON-powered layout</li><li>Expandable previews and inline links</li></ul><p>We’ll post tips, patch notes, and featured creations here—so check back often!</p>",
+    "image": null
+  }
+]
